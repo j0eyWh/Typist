@@ -20,7 +20,7 @@ namespace Typist
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        private string _text = "This is a super fancy, sample text! This text is super fancy and long This is a super fancy, sample text! This text is super fancy and long";
+        private string _text = "text! This is a super fancy, sample text! This text is super fancy and long This is a super fancy, sample text! This text is super fancy and long";
 
         private readonly List<IndexedWord> _words;
         private readonly List<IndexedWord> _correctWords = new List<IndexedWord>();
@@ -103,7 +103,17 @@ namespace Typist
                 {
                     if (word.Word.StartsWith(input))
                     {
-                        var x = word.Word.Split(new[] { input }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+                        string x;
+
+                        if (input.Length == 1)
+                        {
+                            x = word.Word.Split(new char[]{ input.First() }, 2)
+                                .LastOrDefault();
+                        }
+                        else
+                        {
+                            x = word.Word.Split(new[] { input }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+                        }
 
                         var prerun = new Run()
                         {
@@ -160,5 +170,5 @@ namespace Typist
             return runs;
         }
     }
-    
+
 }
