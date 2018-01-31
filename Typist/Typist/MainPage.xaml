@@ -13,7 +13,7 @@
             <RowDefinition/>
         </Grid.RowDefinitions>
 
-        <RichTextBlock x:Name="TextBlock" HorizontalAlignment="Center" MinWidth="300" VerticalAlignment="Bottom"/>
+        <RichTextBlock TextWrapping="WrapWholeWords" FontSize="22" Margin="10" x:Name="TextBlock" HorizontalAlignment="Center" MinWidth="300" VerticalAlignment="Bottom"/>
         <TextBox Grid.Row="1" x:Name="InputTextBox" HorizontalAlignment="Center" MinWidth="300" VerticalAlignment="Top" KeyUp="HandleKeyUp"></TextBox>
     </Grid>
 </Page>

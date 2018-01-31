@@ -107,7 +107,7 @@ namespace Typist
 
                         if (input.Length == 1)
                         {
-                            x = word.Word.Split(new char[]{ input.First() }, 2)
+                            x = word.Word.Split(new char[] { input.First() }, 2)
                                 .LastOrDefault();
                         }
                         else
