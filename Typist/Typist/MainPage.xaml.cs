@@ -57,6 +57,7 @@ namespace Typist
             foreach (var run in _runsDone.Concat(_runsCurrent).Concat(_runsLeft))
             {
                 _paragraph.Inlines.Add(run);
+                _paragraph.Inlines.Add(new Run() { Text = " " });
             }
 
             TextBlock.Blocks.Add(_paragraph);
@@ -68,12 +69,12 @@ namespace Typist
 
             _runsCurrent.Add(new Run()
             {
-                Text = $"{_words.ElementAt(_wordIndex).Word} "
+                Text = _words.ElementAt(_wordIndex).Word
             });
 
             _runsLeft = _words.Skip(_wordIndex + 1).Select(x => new Run()
             {
-                Text = $"{x.Word} "
+                Text = x.Word
             }).ToList();
         }
 
@@ -120,9 +121,22 @@ namespace Typist
         {
             _paragraph.Inlines.Clear();
 
-            foreach (var run in _runsDone.Concat(_runsCurrent.Concat(_runsLeft)))
+            foreach (var run in _runsDone)
             {
                 _paragraph.Inlines.Add(run);
+                _paragraph.Inlines.Add(new Run() { Text = " " });
+            }
+            foreach (var run in _runsCurrent)
+            {
+                _paragraph.Inlines.Add(run);
+            }
+
+            _paragraph.Inlines.Add(new Run() { Text = " " });
+
+            foreach (var run in _runsLeft)
+            {
+                _paragraph.Inlines.Add(run);
+                _paragraph.Inlines.Add(new Run() { Text = " " });
             }
         }
 
