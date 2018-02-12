@@ -101,6 +101,9 @@
     <Compile Include="Controls\TimerControl.xaml.cs">
       <DependentUpon>TimerControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\TypingPad.xaml.cs">
+      <DependentUpon>TypingPad.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
@@ -133,6 +136,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Controls\TimerControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\TypingPad.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
