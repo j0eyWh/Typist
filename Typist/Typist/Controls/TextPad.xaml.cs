@@ -31,6 +31,7 @@ namespace Typist.Controls
         private readonly List<IndexedWord> _wrongWords = new List<IndexedWord>();
         private readonly List<Run> _runsDone = new List<Run>();
         private readonly RunGenerationService _runGenerationService;
+        private readonly Paragraph _paragraph;
 
         private List<Run> RunsCurrent => GetCurrentRuns();
 
@@ -39,9 +40,11 @@ namespace Typist.Controls
             Text = x.Word
         }).ToList();
 
-        private readonly Paragraph _paragraph;
 
         private int _wordIndex;
+        private bool _isTyping = false;
+
+        public event EventHandler TypingStarted;
 
         public TextPad()
         {
@@ -67,6 +70,12 @@ namespace Typist.Controls
 
         private void HandleKeyUp(object sender, KeyRoutedEventArgs e)
         {
+            if (!_isTyping)
+            {
+                _isTyping = true;
+                OnTypingStarted();
+            }
+
             var input = InputTextBox.Text;
 
             if (e.Key == VirtualKey.Space && string.IsNullOrEmpty(input))
@@ -190,6 +199,11 @@ namespace Typist.Controls
                 _paragraph.Inlines.Add(new Run() { Text = " " });
                 _paragraph.Inlines.Add(run);
             }
+        }
+
+        private void OnTypingStarted()
+        {
+            TypingStarted?.Invoke(this, EventArgs.Empty);
         }
     }
 }

@@ -1,17 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using Windows.System;
-using Windows.UI;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Documents;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Markup;
-using Windows.UI.Xaml.Media;
-using Typist.Models;
-using Typist.UiServices;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -24,8 +12,10 @@ namespace Typist
     {
         public MainPage()
         {
-            this.InitializeComponent();
+            InitializeComponent();
+            TextPad.TypingStarted += HandleTypingStarted;
         }
 
+        private void HandleTypingStarted(object sender, EventArgs eventArgs) => TimerControl.Start();
     }
 }

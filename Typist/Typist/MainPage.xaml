@@ -10,8 +10,8 @@
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <StackPanel>
-            <controls:TimerControl x:Name="TimerControl"></controls:TimerControl>
-            <controls:TextPad></controls:TextPad>
+            <controls:TimerControl x:Name="TimerControl"/>
+            <controls:TextPad x:Name="TextPad"/>
         </StackPanel>
     </Grid>
 </Page>
