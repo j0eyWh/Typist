@@ -9,6 +9,9 @@
     mc:Ignorable="d">
 
     <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-        <controls:TextPad></controls:TextPad>
+        <StackPanel>
+            <controls:TimerControl x:Name="TimerControl"></controls:TimerControl>
+            <controls:TextPad></controls:TextPad>
+        </StackPanel>
     </Grid>
 </Page>
