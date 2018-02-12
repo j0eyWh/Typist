@@ -22,9 +22,6 @@ namespace Typist
     /// </summary>
     public sealed partial class MainPage : Page
     {
-        //private string _text = "text! This is a super fancy, sample text! This text is super fancy and long This is a super fancy, sample text! This text is super fancy and long";
-
-
         public MainPage()
         {
             this.InitializeComponent();
