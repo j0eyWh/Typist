@@ -23,191 +23,188 @@ using Typist.UiServices;
 
 namespace Typist.Controls
 {
-    public sealed partial class TextPad : UserControl
-    {
-	    private readonly WordsLoader _wordsLoader;
+	public sealed partial class TextPad : UserControl
+	{
+		private readonly WordsLoader _wordsLoader;
 
-        private string _text = "text! This is";
+		private string _text = "text! This is";
 
-        private readonly List<IndexedWord> _words;
-        private readonly List<IndexedWord> _correctWords = new List<IndexedWord>();
-        private readonly List<IndexedWord> _wrongWords = new List<IndexedWord>();
+		private readonly List<IndexedWord> _words = new List<IndexedWord>();
+		private readonly List<IndexedWord> _correctWords = new List<IndexedWord>();
+		private readonly List<IndexedWord> _wrongWords = new List<IndexedWord>();
 
-        private readonly List<Run> _runsDone = new List<Run>();
-        private readonly RunsGenerator _runGenerationService;
-        private readonly Paragraph _paragraph;
+		private readonly List<Run> _runsDone = new List<Run>();
+		private readonly RunsGenerator _runGenerationService;
+		private readonly Paragraph _paragraph;
 
-        private List<Run> RunsCurrent => GetCurrentRuns();
+		private List<Run> RunsCurrent => GetCurrentRuns();
 
-        private List<Run> RunsLeft => _words.Skip(_wordIndex + 1).Select(x => new Run()
-        {
-            Text = x.Word
-        }).ToList();
+		private List<Run> RunsLeft => _words.Skip(_wordIndex + 1).Select(x => new Run()
+		{
+			Text = x.Word
+		}).ToList();
 
 
-        private int _wordIndex;
-        private bool _isTyping = false;
+		private int _wordIndex;
+		private bool _isTyping = false;
 
-        public event EventHandler TypingStarted;
+		public event EventHandler TypingStarted;
 
-        public TextPad()
-        {
-            this.InitializeComponent();
-	        _wordsLoader = App.DepedencyResolver.Get<WordsLoader>();
+		public TextPad()
+		{
+			this.InitializeComponent();
+			_wordsLoader = App.DepedencyResolver.Get<WordsLoader>();
+			_runGenerationService = new RunsGenerator();
+			_paragraph = new Paragraph();
 
-            _runGenerationService = new RunsGenerator();
+			this.Loaded += HandleLoaded;
+		}
 
-            int s = 0;
-            _words = _text.Split(' ')
-                .Select(x =>
-                {
-                    var i = new IndexedWord() { Index = s, Word = x };
-                    s++;
-                    return i;
-                })
-                .ToList();
+		private async void HandleLoaded(object sender, RoutedEventArgs routedEventArgs)
+		{
+			_words.AddRange(await _wordsLoader.LoadRandomBatch(20));
 
-            _paragraph = new Paragraph();
-            TextBlock.Blocks.Add(_paragraph);
-            Redraw();
-        }
+			TextBlock.Blocks.Add(_paragraph);
+			Redraw();
+		}
 
-        private void HandleKeyUp(object sender, KeyRoutedEventArgs e)
-        {
-            if (!_isTyping)
-            {
-                _isTyping = true;
-                OnTypingStarted();
-            }
 
-            var input = InputTextBox.Text;
+		private void HandleKeyUp(object sender, KeyRoutedEventArgs e)
+		{
+			if (!_isTyping)
+			{
+				_isTyping = true;
+				OnTypingStarted();
+			}
 
-            if (e.Key == VirtualKey.Space && string.IsNullOrEmpty(input))
-            {
-                InputTextBox.Text = string.Empty;
-                return;
-            }
+			var input = InputTextBox.Text;
 
-            var currentWord = _words.ElementAt(_wordIndex);
+			if (e.Key == VirtualKey.Space && string.IsNullOrEmpty(input))
+			{
+				InputTextBox.Text = string.Empty;
+				return;
+			}
 
-            if (e.Key == VirtualKey.Space)
-            {
+			var currentWord = _words.ElementAt(_wordIndex);
 
-                _lastGoodInput = null;
-                ++_wordIndex;
+			if (e.Key == VirtualKey.Space)
+			{
 
-                InputTextBox.Text = string.Empty;
+				_lastGoodInput = null;
+				++_wordIndex;
 
-                var run = _runGenerationService.GenerateRun(currentWord.Word, true);
+				InputTextBox.Text = string.Empty;
 
-                if (input.Trim() == currentWord.Word)
-                {
-                    _correctWords.Add(currentWord);
-                    run.Foreground = new SolidColorBrush(Colors.ForestGreen);
-                }
-                else
-                {
-                    _wrongWords.Add(currentWord);
-                }
-                _runsDone.Add(run);
-                //Redraw();
-            }
+				var run = _runGenerationService.GenerateRun(currentWord.Word, true);
 
-            Redraw();
-        }
+				if (input.Trim() == currentWord.Word)
+				{
+					_correctWords.Add(currentWord);
+					run.Foreground = new SolidColorBrush(Colors.ForestGreen);
+				}
+				else
+				{
+					_wrongWords.Add(currentWord);
+				}
+				_runsDone.Add(run);
+				//Redraw();
+			}
 
-        private string _lastGoodInput = null;
+			Redraw();
+		}
 
-        private List<Run> GetCurrentRuns()
-        {
-            var currentWord = _words.ElementAt(_wordIndex);
-            var input = InputTextBox.Text;
+		private string _lastGoodInput = null;
 
-            var l = new List<Run>();
+		private List<Run> GetCurrentRuns()
+		{
+			var currentWord = _words.ElementAt(_wordIndex);
+			var input = InputTextBox.Text;
 
-            if (currentWord.Word.StartsWith(input))
-            {
-                string x;
+			var l = new List<Run>();
 
-                _lastGoodInput = input;
+			if (currentWord.Word.StartsWith(input))
+			{
+				string x;
 
-                if (input.Length == 1)
-                {
-                    x = currentWord.Word.Split(new[] { input.First() }, 2)
-                        .LastOrDefault();
-                }
-                else
-                {
-                    x = currentWord.Word.Split(new[] { input }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
-                }
+				_lastGoodInput = input;
 
-                l.Add(new Run()
-                {
-                    Text = input,
-                    Foreground = new SolidColorBrush(Colors.ForestGreen)
-                });
-                if (x != null)
-                {
-                    l.Add(new Run()
-                    {
-                        Text = x,
-                    });
-                }
-            }
+				if (input.Length == 1)
+				{
+					x = currentWord.Word.Split(new[] { input.First() }, 2)
+						.LastOrDefault();
+				}
+				else
+				{
+					x = currentWord.Word.Split(new[] { input }, StringSplitOptions.RemoveEmptyEntries).FirstOrDefault();
+				}
 
-            else
-            {
-                if (_lastGoodInput != null)
-                {
-                    l.Add(new Run()
-                    {
-                        Text = _lastGoodInput,
-                        Foreground = new SolidColorBrush(Colors.ForestGreen),
-                    });
-                    l.Add(new Run()
-                    {
-                        Text = string.Join(string.Empty, currentWord.Word.Skip(_lastGoodInput.Length)),
-                        Foreground = new SolidColorBrush(Colors.Red),
-                    });
+				l.Add(new Run()
+				{
+					Text = input,
+					Foreground = new SolidColorBrush(Colors.ForestGreen)
+				});
+				if (x != null)
+				{
+					l.Add(new Run()
+					{
+						Text = x,
+					});
+				}
+			}
 
-                }
-                else
-                {
-                    l.Add(new Run()
-                    {
-                        Text = currentWord.Word,
-                        Foreground = new SolidColorBrush(Colors.Red)
-                    });
-                }
-            }
+			else
+			{
+				if (_lastGoodInput != null)
+				{
+					l.Add(new Run()
+					{
+						Text = _lastGoodInput,
+						Foreground = new SolidColorBrush(Colors.ForestGreen),
+					});
+					l.Add(new Run()
+					{
+						Text = string.Join(string.Empty, currentWord.Word.Skip(_lastGoodInput.Length)),
+						Foreground = new SolidColorBrush(Colors.Red),
+					});
 
-            return l;
-        }
+				}
+				else
+				{
+					l.Add(new Run()
+					{
+						Text = currentWord.Word,
+						Foreground = new SolidColorBrush(Colors.Red)
+					});
+				}
+			}
 
-        private void Redraw()
-        {
-            _paragraph.Inlines.Clear();
+			return l;
+		}
 
-            foreach (var run in _runsDone)
-            {
-                _paragraph.Inlines.Add(run);
-                _paragraph.Inlines.Add(new Run() { Text = " " });
-            }
-            foreach (var run in RunsCurrent)
-            {
-                _paragraph.Inlines.Add(run);
-            }
+		private void Redraw()
+		{
+			_paragraph.Inlines.Clear();
 
-            foreach (var run in RunsLeft)
-            {
-                _paragraph.Inlines.Add(new Run() { Text = " " });
-                _paragraph.Inlines.Add(run);
-            }
-        }
+			foreach (var run in _runsDone)
+			{
+				_paragraph.Inlines.Add(run);
+				_paragraph.Inlines.Add(new Run() { Text = " " });
+			}
+			foreach (var run in RunsCurrent)
+			{
+				_paragraph.Inlines.Add(run);
+			}
 
-        private void OnTypingStarted()
-        {
-            TypingStarted?.Invoke(this, EventArgs.Empty);
-        }
-    }
+			foreach (var run in RunsLeft)
+			{
+				_paragraph.Inlines.Add(new Run() { Text = " " });
+				_paragraph.Inlines.Add(run);
+			}
+		}
+
+		private void OnTypingStarted()
+		{
+			TypingStarted?.Invoke(this, EventArgs.Empty);
+		}
+	}
 }
