@@ -6,31 +6,31 @@ using Windows.UI.Xaml.Controls;
 
 namespace Typist.Controls
 {
-    public sealed partial class TimerControl : UserControl
-    {
-        private readonly DispatcherTimer _timer = new DispatcherTimer();
+	public sealed partial class TimerControl : UserControl
+	{
+		private readonly DispatcherTimer _timer = new DispatcherTimer();
 
-        private TimeSpan _timeSpan = TimeSpan.FromSeconds(59);
+		private TimeSpan _timeSpan = TimeSpan.FromSeconds(59);
 
-        public TimerControl()
-        {
-            this.InitializeComponent();
+		public TimerControl()
+		{
+			this.InitializeComponent();
 
-            _timer.Interval = TimeSpan.FromSeconds(1);
+			_timer.Interval = TimeSpan.FromSeconds(1);
 
-            _timer.Tick += HandleTick;
+			_timer.Tick += HandleTick;
 
-            RefreshLabel();
-        }
+			RefreshLabel();
+		}
 
-        public void Start() => _timer.Start();
+		public void Start() => _timer.Start();
 
-        private void HandleTick(object sender, object o)
-        {
-            _timeSpan = _timeSpan - TimeSpan.FromSeconds(1);
-            RefreshLabel();
-        }
+		private void HandleTick(object sender, object o)
+		{
+			_timeSpan = _timeSpan - TimeSpan.FromSeconds(1);
+			RefreshLabel();
+		}
 
-        private void RefreshLabel() => TimeBlock.Text = _timeSpan.ToString("mm\\:ss");
-    }
+		private void RefreshLabel() => TimeBlock.Text = _timeSpan.ToString("mm\\:ss");
+	}
 }

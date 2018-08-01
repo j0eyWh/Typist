@@ -60,7 +60,7 @@ namespace Typist.Controls
 			_words.AddRange(await _wordsLoader.LoadRandomBatch(BatchSize));
 
 			TextBlock.Blocks.Add(_paragraph);
-			Redraw();
+			await Redraw();
 		}
 
 
@@ -84,7 +84,6 @@ namespace Typist.Controls
 
 			if (e.Key == VirtualKey.Space)
 			{
-
 				_lastGoodInput = null;
 				++_wordIndex;
 
