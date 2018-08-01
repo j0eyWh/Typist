@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.System;
@@ -25,6 +26,8 @@ namespace Typist.Controls
 {
 	public sealed partial class TextPad : UserControl
 	{
+		private const int BatchSize = 3;
+
 		private readonly WordsLoader _wordsLoader;
 
 		private string _text = "text! This is";
@@ -37,7 +40,6 @@ namespace Typist.Controls
 		private readonly RunsGenerator _runGenerationService;
 		private readonly Paragraph _paragraph;
 
-		private List<Run> RunsCurrent => GetCurrentRuns();
 
 		private List<Run> RunsLeft => _words.Skip(_wordIndex + 1).Select(x => new Run()
 		{
@@ -62,14 +64,14 @@ namespace Typist.Controls
 
 		private async void HandleLoaded(object sender, RoutedEventArgs routedEventArgs)
 		{
-			_words.AddRange(await _wordsLoader.LoadRandomBatch(20));
+			_words.AddRange(await _wordsLoader.LoadRandomBatch(BatchSize));
 
 			TextBlock.Blocks.Add(_paragraph);
 			Redraw();
 		}
 
 
-		private void HandleKeyUp(object sender, KeyRoutedEventArgs e)
+		private async void HandleKeyUp(object sender, KeyRoutedEventArgs e)
 		{
 			if (!_isTyping)
 			{
@@ -110,13 +112,21 @@ namespace Typist.Controls
 				//Redraw();
 			}
 
-			Redraw();
+			await Redraw();
 		}
 
 		private string _lastGoodInput = null;
 
-		private List<Run> GetCurrentRuns()
+		private async Task<List<Run>> GetCurrentRuns()
 		{
+			if (_wordIndex == _words.Count)
+			{
+				_words.Clear();
+				_wordIndex = 0;
+				_words.AddRange(await _wordsLoader.LoadRandomBatch(BatchSize));
+				_runsDone.Clear();
+				_paragraph.Inlines.Clear();
+			}
 			var currentWord = _words.ElementAt(_wordIndex);
 			var input = InputTextBox.Text;
 
@@ -181,7 +191,7 @@ namespace Typist.Controls
 			return l;
 		}
 
-		private void Redraw()
+		private async Task Redraw()
 		{
 			_paragraph.Inlines.Clear();
 
@@ -190,7 +200,7 @@ namespace Typist.Controls
 				_paragraph.Inlines.Add(run);
 				_paragraph.Inlines.Add(new Run() { Text = " " });
 			}
-			foreach (var run in RunsCurrent)
+			foreach (var run in await GetCurrentRuns())
 			{
 				_paragraph.Inlines.Add(run);
 			}
