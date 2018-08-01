@@ -109,7 +109,7 @@
     </Compile>
     <Compile Include="Models\IndexedWord.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="UiServices\RunGenerationService.cs" />
+    <Compile Include="UiServices\RunsGenerator.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -155,6 +155,9 @@
     <PackageReference Include="Newtonsoft.Json">
       <Version>11.0.2</Version>
     </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Mocks\Words.json" />
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

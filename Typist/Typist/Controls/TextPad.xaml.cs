@@ -29,8 +29,9 @@ namespace Typist.Controls
         private readonly List<IndexedWord> _words;
         private readonly List<IndexedWord> _correctWords = new List<IndexedWord>();
         private readonly List<IndexedWord> _wrongWords = new List<IndexedWord>();
+
         private readonly List<Run> _runsDone = new List<Run>();
-        private readonly RunGenerationService _runGenerationService;
+        private readonly RunsGenerator _runGenerationService;
         private readonly Paragraph _paragraph;
 
         private List<Run> RunsCurrent => GetCurrentRuns();
@@ -51,7 +52,7 @@ namespace Typist.Controls
             this.InitializeComponent();
 
             this.InitializeComponent();
-            _runGenerationService = new RunGenerationService();
+            _runGenerationService = new RunsGenerator();
 
             int s = 0;
             _words = _text.Split(' ')
