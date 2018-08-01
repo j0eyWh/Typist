@@ -8,9 +8,11 @@ namespace Typist.Controls
 {
 	public sealed partial class TimerControl : UserControl
 	{
+		public event EventHandler TimesUp;
+
 		private readonly DispatcherTimer _timer = new DispatcherTimer();
 
-		private TimeSpan _timeSpan = TimeSpan.FromSeconds(59);
+		private TimeSpan _timeSpan;
 
 		public TimerControl()
 		{
@@ -23,14 +25,30 @@ namespace Typist.Controls
 			RefreshLabel();
 		}
 
-		public void Start() => _timer.Start();
+		public void StartCountDown(int seconds)
+		{
+			_timeSpan = TimeSpan.FromSeconds(seconds);
+			_timer.Start();
+		}
 
 		private void HandleTick(object sender, object o)
 		{
 			_timeSpan = _timeSpan - TimeSpan.FromSeconds(1);
+
+			if (_timeSpan == TimeSpan.Zero)
+			{
+				_timer.Stop();
+				OnTimesUp();
+			}
+
 			RefreshLabel();
 		}
 
 		private void RefreshLabel() => TimeBlock.Text = _timeSpan.ToString("mm\\:ss");
+
+		private void OnTimesUp()
+		{
+			TimesUp?.Invoke(this, EventArgs.Empty);
+		}
 	}
 }

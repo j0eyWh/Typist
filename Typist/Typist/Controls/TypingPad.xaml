@@ -15,8 +15,8 @@
             <RowDefinition Height="1*"/>
         </Grid.RowDefinitions>
         
-        <controls:TimerControl Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
-        <controls:TextPad Grid.Row="1"/>
+        <controls:TimerControl x:Name="TimerControl" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+        <controls:TextPad x:Name="TextPad" Grid.Row="1"/>
 
     </Grid>
 </UserControl>

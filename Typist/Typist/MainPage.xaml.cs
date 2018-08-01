@@ -1,5 +1,4 @@
-﻿using System;
-using Windows.UI.Xaml.Controls;
+﻿using Windows.UI.Xaml.Controls;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=402352&clcid=0x409
 
@@ -13,9 +12,6 @@ namespace Typist
         public MainPage()
         {
             InitializeComponent();
-            TextPad.TypingStarted += HandleTypingStarted;
         }
-
-        private void HandleTypingStarted(object sender, EventArgs eventArgs) => TimerControl.Start();
     }
 }
