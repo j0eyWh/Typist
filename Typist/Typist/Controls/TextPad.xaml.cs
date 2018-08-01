@@ -51,7 +51,6 @@ namespace Typist.Controls
         {
             this.InitializeComponent();
 
-            this.InitializeComponent();
             _runGenerationService = new RunsGenerator();
 
             int s = 0;
