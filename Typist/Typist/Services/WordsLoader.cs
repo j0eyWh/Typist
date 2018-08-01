@@ -10,15 +10,20 @@ namespace Typist.Services
 {
 	public class WordsLoader
 	{
-		private List<string> _words;
 		private readonly Random _random;
+		private List<string> _words;
 
 		public WordsLoader()
 		{
 			_random = new Random();
 		}
 
-		public async Task<IEnumerable<IndexedWord>> LoadBatch(int size)
+		/// <summary>
+		/// Loads a random batch of words
+		/// </summary>
+		/// <param name="size">Size of the batch to be returned</param>
+		/// <returns></returns>
+		public async Task<IEnumerable<IndexedWord>> LoadRandomBatch(int size)
 		{
 			await LoadWords();
 
