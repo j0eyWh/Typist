@@ -104,6 +104,10 @@
     <Compile Include="Controls\TypingPad.xaml.cs">
       <DependentUpon>TypingPad.xaml</DependentUpon>
     </Compile>
+    <Compile Include="IoC\AutofacContainerBootstrapper.cs" />
+    <Compile Include="IoC\AutofacDependencyResolver.cs" />
+    <Compile Include="IoC\IContainerBootStraper.cs" />
+    <Compile Include="IoC\IDepedencyResolver.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>

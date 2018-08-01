@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Typist.Models;
+using Typist.Services;
 using Typist.UiServices;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
@@ -24,6 +25,8 @@ namespace Typist.Controls
 {
     public sealed partial class TextPad : UserControl
     {
+	    private readonly WordsLoader _wordsLoader;
+
         private string _text = "text! This is";
 
         private readonly List<IndexedWord> _words;
@@ -50,6 +53,7 @@ namespace Typist.Controls
         public TextPad()
         {
             this.InitializeComponent();
+	        _wordsLoader = App.DepedencyResolver.Get<WordsLoader>();
 
             _runGenerationService = new RunsGenerator();
 

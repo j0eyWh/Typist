@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Typist.IoC;
 
 namespace Typist
 {
@@ -22,14 +23,21 @@ namespace Typist
     /// </summary>
     sealed partial class App : Application
     {
-        /// <summary>
-        /// Initializes the singleton application object.  This is the first line of authored code
-        /// executed, and as such is the logical equivalent of main() or WinMain().
-        /// </summary>
-        public App()
+	    public static IDepedencyResolver DepedencyResolver { get; }
+
+		static App()
+		{
+			DepedencyResolver = new AutofacContainerBootstrapper().GetDepedencyResolver();
+		}
+
+		/// <summary>
+		/// Initializes the singleton application object.  This is the first line of authored code
+		/// executed, and as such is the logical equivalent of main() or WinMain().
+		/// </summary>
+		public App()
         {
             this.InitializeComponent();
-            this.Suspending += OnSuspending;
+			this.Suspending += OnSuspending;
         }
 
         /// <summary>
