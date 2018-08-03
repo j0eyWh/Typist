@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.UI;
+﻿using Windows.UI;
 using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Media;
 
 namespace Typist.UiServices
 {
-    public class RunGenerationService
+    public class RunsGenerator
     {
         public Run GenerateRun(string text, bool failed) => new Run()
         {

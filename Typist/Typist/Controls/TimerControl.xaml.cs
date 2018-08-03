@@ -1,45 +1,59 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace Typist.Controls
 {
-    public sealed partial class TimerControl : UserControl
-    {
-        private DispatcherTimer _timer = new DispatcherTimer();
+	public sealed partial class TimerControl : UserControl
+	{
+		public event EventHandler TimesUp;
 
-        private TimeSpan _timeSpan = TimeSpan.FromMinutes(1);
+		private readonly DispatcherTimer _timer = new DispatcherTimer();
 
-        public TimerControl()
-        {
-            this.InitializeComponent();
+		private TimeSpan _timeSpan;
 
-            _timer.Interval = TimeSpan.FromSeconds(1);
+		public TimerControl()
+		{
+			this.InitializeComponent();
 
-            _timer.Tick += HandleTick;
+			_timer.Interval = TimeSpan.FromSeconds(1);
 
-            TimeBlock.Text = $"{_timeSpan.Minutes} : {_timeSpan.Seconds}";
-        }
+			_timer.Tick += HandleTick;
+		}
 
-        public void Start() => _timer.Start();
+		public void ResetTimer(int seconds)
+		{
+			_timeSpan = TimeSpan.FromSeconds(seconds);
+			_timer.Stop();
+			RefreshLabel();
+		}
 
-        private void HandleTick(object sender, object o)
-        {
-            _timeSpan = _timeSpan - TimeSpan.FromSeconds(1);
-        }
-    }
+		public void StartCountDown(int seconds)
+		{
+			_timeSpan = TimeSpan.FromSeconds(seconds);
+			_timer.Start();
+		}
+
+		private void HandleTick(object sender, object o)
+		{
+			_timeSpan = _timeSpan - TimeSpan.FromSeconds(1);
+
+			if (_timeSpan == TimeSpan.Zero)
+			{
+				_timer.Stop();
+				OnTimesUp();
+			}
+
+			RefreshLabel();
+		}
+
+		private void RefreshLabel() => TimeBlock.Text = _timeSpan.ToString("mm\\:ss");
+
+		private void OnTimesUp()
+		{
+			TimesUp?.Invoke(this, EventArgs.Empty);
+		}
+	}
 }
