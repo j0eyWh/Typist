@@ -21,7 +21,12 @@ namespace Typist.Controls
 			_timer.Interval = TimeSpan.FromSeconds(1);
 
 			_timer.Tick += HandleTick;
+		}
 
+		public void ResetTimer(int seconds)
+		{
+			_timeSpan = TimeSpan.FromSeconds(seconds);
+			_timer.Stop();
 			RefreshLabel();
 		}
 

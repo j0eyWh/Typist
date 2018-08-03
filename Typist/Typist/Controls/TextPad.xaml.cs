@@ -19,11 +19,9 @@ namespace Typist.Controls
 {
 	public sealed partial class TextPad : UserControl
 	{
-		private const int BatchSize = 3;
+		private const int BatchSize = 20;
 
 		private readonly WordsLoader _wordsLoader;
-
-		private string _text = "text! This is";
 
 		private readonly List<IndexedWord> _words = new List<IndexedWord>();
 		private readonly List<IndexedWord> _correctWords = new List<IndexedWord>();
@@ -33,11 +31,14 @@ namespace Typist.Controls
 		private readonly RunsGenerator _runGenerationService;
 		private readonly Paragraph _paragraph;
 
+		private string _lastGoodInput = null;
 
-		private List<Run> RunsLeft => _words.Skip(_wordIndex + 1).Select(x => new Run()
-		{
-			Text = x.Word
-		}).ToList();
+		private List<Run> RunsLeft => _words.Skip(_wordIndex + 1)
+			.Select(x => new Run()
+			{
+				Text = x.Word
+			})
+			.ToList();
 
 
 		private int _wordIndex;
@@ -47,7 +48,7 @@ namespace Typist.Controls
 
 		public TextPad()
 		{
-			this.InitializeComponent();
+			InitializeComponent();
 			_wordsLoader = App.DepedencyResolver.Get<WordsLoader>();
 			_runGenerationService = new RunsGenerator();
 			_paragraph = new Paragraph();
@@ -55,14 +56,27 @@ namespace Typist.Controls
 			this.Loaded += HandleLoaded;
 		}
 
-		private async void HandleLoaded(object sender, RoutedEventArgs routedEventArgs)
+		public void FinishTypingSession()
 		{
-			_words.AddRange(await _wordsLoader.LoadRandomBatch(BatchSize));
+			_isTyping = false;
+			_paragraph.Inlines.Clear();
+			InputTextBox.Text = string.Empty;
+			InputTextBox.IsEnabled = false;
+		}
 
-			TextBlock.Blocks.Add(_paragraph);
+		public async Task PrepareTypingSession()
+		{
+			InputTextBox.IsEnabled = true;
+			InputTextBox.Focus(FocusState.Pointer);
+			await LoadNewBatch();
 			await Redraw();
 		}
 
+		private async void HandleLoaded(object sender, RoutedEventArgs routedEventArgs)
+		{
+			await PrepareTypingSession();
+			TextBlock.Blocks.Add(_paragraph);
+		}
 
 		private async void HandleKeyUp(object sender, KeyRoutedEventArgs e)
 		{
@@ -101,24 +115,28 @@ namespace Typist.Controls
 					_wrongWords.Add(currentWord);
 				}
 				_runsDone.Add(run);
-				//Redraw();
 			}
 
 			await Redraw();
 		}
 
-		private string _lastGoodInput = null;
+
+		private async Task LoadNewBatch()
+		{
+			_words.Clear();
+			_wordIndex = 0;
+			_words.AddRange(await _wordsLoader.LoadRandomBatch(BatchSize));
+			_runsDone.Clear();
+			_paragraph.Inlines.Clear();
+		}
 
 		private async Task<List<Run>> GetCurrentRuns()
 		{
 			if (_wordIndex == _words.Count)
 			{
-				_words.Clear();
-				_wordIndex = 0;
-				_words.AddRange(await _wordsLoader.LoadRandomBatch(BatchSize));
-				_runsDone.Clear();
-				_paragraph.Inlines.Clear();
+				await LoadNewBatch();
 			}
+
 			var currentWord = _words.ElementAt(_wordIndex);
 			var input = InputTextBox.Text;
 
@@ -143,7 +161,7 @@ namespace Typist.Controls
 				l.Add(new Run()
 				{
 					Text = input,
-					Foreground = new SolidColorBrush(Colors.ForestGreen)
+					Foreground = new SolidColorBrush(Colors.ForestGreen),
 				});
 				if (x != null)
 				{
@@ -208,5 +226,6 @@ namespace Typist.Controls
 		{
 			TypingStarted?.Invoke(this, EventArgs.Empty);
 		}
+
 	}
 }
