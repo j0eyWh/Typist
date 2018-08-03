@@ -6,11 +6,12 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d"
-    d:DesignHeight="300"
-    d:DesignWidth="400">
+    d:DesignHeight="500"
+    d:DesignWidth="1400">
 
     <Grid HorizontalAlignment="Center" RowSpacing="8">
         <Grid.RowDefinitions>
+            <RowDefinition Height="1*"/>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="1*"/>
             <RowDefinition Height="1*"/>
@@ -19,6 +20,8 @@
         <controls:TimerControl x:Name="TimerControl" Grid.Row="0" HorizontalAlignment="Center" VerticalAlignment="Center"/>
         <controls:TextPad x:Name="TextPad" Grid.Row="1"/>
         <Button Grid.Row="2" Content="Reset" VerticalAlignment="Top" HorizontalAlignment="Center" Click="HandleResetClick"/>
+        
+        <controls:ScoresBoard x:Name="ScoresBoard" Grid.Row="3"></controls:ScoresBoard>
     </Grid>
 </UserControl>
 

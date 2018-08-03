@@ -95,6 +95,9 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Controls\ScoresBoard.xaml.cs">
+      <DependentUpon>ScoresBoard.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Controls\TextPad.xaml.cs">
       <DependentUpon>TextPad.xaml</DependentUpon>
     </Compile>
@@ -112,9 +115,13 @@
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Models\IndexedWord.cs" />
+    <Compile Include="Models\Scores.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\WordsLoader.cs" />
     <Compile Include="UiServices\RunsGenerator.cs" />
+    <Compile Include="ViewModels\ScoresViewModel.cs" />
+    <Compile Include="ViewModels\ViewModelBase.cs" />
   </ItemGroup>
   <ItemGroup>
     <AppxManifest Include="Package.appxmanifest">
@@ -136,6 +143,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="Controls\ScoresBoard.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Controls\TextPad.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

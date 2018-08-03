@@ -8,7 +8,7 @@ namespace Typist.Controls
 {
 	public sealed partial class TypingPad : UserControl
 	{
-		private const int TypingTime = 5;
+		private const int TypingTime = 59;
 		public TypingPad()
 		{
 			this.InitializeComponent();
@@ -22,7 +22,11 @@ namespace Typist.Controls
 
 		private void TimerControlOnTimesUp(object o, EventArgs eventArgs)
 		{
+			var score = this.TextPad.GetScore();
+
 			this.TextPad.FinishTypingSession();
+
+			this.ScoresBoard.SetScore(score);
 		}
 
 		private async void HandleResetClick(object sender, RoutedEventArgs e)

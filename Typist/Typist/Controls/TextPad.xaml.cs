@@ -62,6 +62,9 @@ namespace Typist.Controls
 			_paragraph.Inlines.Clear();
 			InputTextBox.Text = string.Empty;
 			InputTextBox.IsEnabled = false;
+			_words.Clear();
+			_correctWords.Clear();
+			_wrongWords.Clear();
 		}
 
 		public async Task PrepareTypingSession()
@@ -70,6 +73,16 @@ namespace Typist.Controls
 			InputTextBox.Focus(FocusState.Pointer);
 			await LoadNewBatch();
 			await Redraw();
+		}
+
+		public Score GetScore()
+		{
+			return new Score()
+			{
+				CorrectWords = _correctWords.Count,
+				WrongWords = _wrongWords.Count,
+				WordsPerMinute = _correctWords.Count + _wrongWords.Count
+			};
 		}
 
 		private async void HandleLoaded(object sender, RoutedEventArgs routedEventArgs)
